@@ -9,13 +9,14 @@ pipeline {
         VENV_DIR = 'venv'  // Direktori virtual environment
     }
     stages {
-        stage('Setup') {
+        stage('Build') {
             steps {
                 sh '''
                 python -m venv $VENV_DIR
                 . $VENV_DIR/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
+                echo "✅ Build berhasil!"
                 '''
             }
         }
@@ -24,8 +25,17 @@ pipeline {
                 sh '''
                 . $VENV_DIR/bin/activate
                 pytest --junitxml=report.xml
+                echo "✅ Test berhasil!"
                 '''
             }
         }
     }
+    post {
+    success {
+        echo "🎉 Pipeline berhasil dijalankan tanpa error!"
+    }
+    failure {
+        echo "❌ Pipeline gagal! Periksa error di log."
+    }
+}
 }
