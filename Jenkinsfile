@@ -1,25 +1,28 @@
 node {
-    def venvDir = 'venv'
+    def venvDir = "${env.WORKSPACE}/venv"
 
-    stage('Build') {
-        docker.image('python:3.9.11').inside('--mount source=pip-cache,target=/root/.cache/pip -p 5000:5000') {
-            sh '''
-            python -m venv venv
-            . venv/bin/activate
-            pip install --upgrade pip
-            pip install -r requirements.txt --cache-dir /root/.cache/pip
-            echo "✅ Build berhasil!"
-            '''
+    docker.image('python:3.9.11').inside('-p 5000:5000') {
+        
+        stage('Checkout') {
+            checkout scm
         }
-    }
 
-    stage('Test') {
-        docker.image('python:3.9.11').inside() {
-            sh '''
-            . venv/bin/activate
+        stage('Setup') {
+            sh """
+            python -m venv ${venvDir}
+            . ${venvDir}/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            echo "✅ Build berhasil!"
+            """
+        }
+
+        stage('Test') {
+            sh """
+            . ${venvDir}/bin/activate
             pytest --junitxml=report.xml
             echo "✅ Test berhasil!"
-            '''
+            """
         }
     }
 }
