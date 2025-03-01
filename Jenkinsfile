@@ -7,7 +7,7 @@ node {
             checkout scm
         }
 
-        stage('Setup') {
+        stage('Build') {
             sh """
             python -m venv ${venvDir}
             . ${venvDir}/bin/activate
