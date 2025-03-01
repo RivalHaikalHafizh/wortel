@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh '''
                 python -m venv $VENV_DIR
-                source $VENV_DIR/bin/activate
+                . $VENV_DIR/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 '''
@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                source $VENV_DIR/bin/activate
+                . $VENV_DIR/bin/activate
                 pytest --junitxml=report.xml
                 '''
             }
