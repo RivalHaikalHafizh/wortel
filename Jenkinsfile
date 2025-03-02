@@ -2,7 +2,7 @@ node {
     def venvDir = "${env.WORKSPACE}/venv"
     def dockerImage = "rivalhaikakhafizh/wortel-app:latest" 
 
-    docker.image('python:3.9.11').inside('-p 5000:5000 -v /var/run/docker.sock:/var/run/docker.sock') {
+    docker.image('python:3.9.11').inside('-p 5000:5000') {
 
         stage('Checkout') {
             checkout scm
@@ -34,10 +34,11 @@ node {
             sh """
             . ${venvDir}/bin/activate
             python app.py &  # Menjalankan aplikasi di background
-            sleep 2  # Menjeda eksekusi selama 1 menit
+            sleep 60  # Menjeda eksekusi selama 1 menit
             pkill -f app.py  # Menghentikan aplikasi setelah 1 menit
             echo "✅ Deploy selesai!"
             """
+        }
         }
 
         stage('Manual Approval for Live Env') {
@@ -57,5 +58,4 @@ node {
                 echo "✅ Docker Image berhasil di-push ke Docker Hub!"
             }
         }
-    }
 }
