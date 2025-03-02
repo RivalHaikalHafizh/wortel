@@ -1,5 +1,6 @@
 node {
     def venvDir = "${env.WORKSPACE}/venv"
+    def dockerImage = "rivalhaikakhafizh/wortel-app:latest" 
 
     docker.image('python:3.9.11').inside('-p 5000:5000') {
 
@@ -26,10 +27,10 @@ node {
         }
 
         stage('Manual Approval') {
-            input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
+            input message: 'Lanjutkan ke tahap Deploy Local Env?', ok: 'Proceed'
         }
 
-        stage('Deploy') {
+        stage('Deploy Local Env') {
             sh """
             . ${venvDir}/bin/activate
             python app.py &  # Menjalankan aplikasi di background
@@ -37,6 +38,24 @@ node {
             pkill -f app.py  # Menghentikan aplikasi setelah 1 menit
             echo "✅ Deploy selesai!"
             """
+        }
+
+        stage('Manual Approval for Live Env') {
+            input message: 'Apakah Anda ingin deploy ke Live Environment?', ok: 'Proceed'
+        }
+
+        stage('Build Docker Image') {
+            sh """
+            docker build -t ${dockerImage} .
+            echo "✅ Docker Image berhasil dibuat!"
+            """
+        }
+
+        stage('Push Docker Image') {
+            withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+                sh "docker push ${dockerImage}"
+                echo "✅ Docker Image berhasil di-push ke Docker Hub!"
+            }
         }
     }
 }
