@@ -11,7 +11,7 @@ COPY . .
 RUN python -m venv venv 
 
 # Mengaktifkan virtual environment dan menginstal dependencies
-RUN . venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+RUN . venv/bin/activate && pip install -r requirements-live.txt
 
 # Menentukan port yang akan digunakan di dalam container
 EXPOSE 5000

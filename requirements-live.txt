@@ -5,4 +5,4 @@ numpy==1.25.2
 Werkzeug==3.0.3
 pandas
 joblib
-pytest
+gunicorn==20.1.0
