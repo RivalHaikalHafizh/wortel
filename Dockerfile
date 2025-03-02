@@ -1,14 +1,17 @@
-# Menggunakan base image Python versi 3.9
-FROM python:3.9
+# Gunakan Python versi slim untuk mengurangi ukuran image
+FROM python:3.9-slim
 
-# Menetapkan direktori kerja di dalam container
+# Set direktori kerja di dalam container
 WORKDIR /app
 
-# Menyalin semua file proyek ke dalam container, termasuk venv
-COPY . .  
+# Copy file dari project ke container
+COPY . /app
+
+# Install dependencies (pastikan requirements.txt ada)
+RUN pip install --no-cache-dir -r requirements-live.txt
 
 # Menentukan port yang akan digunakan dalam container
 EXPOSE 5000
 
-# Menjalankan aplikasi Flask dengan virtual environment yang sudah ada
-CMD ["sh", "-c", ". venv/bin/activate && python app.py"]
+# Jalankan aplikasi
+CMD ["python", "app.py"]
