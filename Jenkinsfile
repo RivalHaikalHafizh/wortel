@@ -2,7 +2,7 @@ node {
     def venvDir = "${env.WORKSPACE}/venv"
     def dockerImage = "rivalhaikakhafizh/wortel-app:latest" 
 
-    docker.image('python:3.9.11').inside('-p 5000:5000') {
+    docker.image('python:3.9.11').inside('-p 5000:5000 -v /var/run/docker.sock:/var/run/docker.sock') {
 
         stage('Checkout') {
             checkout scm
@@ -34,7 +34,7 @@ node {
             sh """
             . ${venvDir}/bin/activate
             python app.py &  # Menjalankan aplikasi di background
-            sleep 60  # Menjeda eksekusi selama 1 menit
+            sleep 2  # Menjeda eksekusi selama 1 menit
             pkill -f app.py  # Menghentikan aplikasi setelah 1 menit
             echo "✅ Deploy selesai!"
             """
