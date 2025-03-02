@@ -4,14 +4,11 @@ FROM python:3.9
 # Menetapkan direktori kerja di dalam container
 WORKDIR /app
 
-# Menyalin semua file dari direktori proyek ke dalam container
-COPY . .
+# Menyalin semua file proyek ke dalam container, termasuk venv
+COPY . .  
 
-# Mengaktifkan virtual environment dan menginstal dependencies
-RUN . venv/bin/activate 
-
-# Menentukan port yang akan digunakan di dalam container
+# Menentukan port yang akan digunakan dalam container
 EXPOSE 5000
 
-# Menjalankan aplikasi Flask saat container dijalankan
+# Menjalankan aplikasi Flask dengan virtual environment yang sudah ada
 CMD ["sh", "-c", ". venv/bin/activate && python app.py"]
